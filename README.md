@@ -1,2 +1,2 @@
-# simple-intervention-growth-helper
+# Simple-Intervention-Growth-Helper
 the repository 
