@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Style Assessment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #665687;
+            --background-color: #f7c1ff;
+            --card-background: #B084CC;
+            --text-color: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .content {
+            margin-bottom: 2rem;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .learning-content {
+            background-color: var(--background-color);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .question {
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-container {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .result-text {
+            text-align: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .visual-content, .auditory-content, .kinesthetic-content {
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .grid-item {
+            background-color: #e0e7ff;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .exercise-list {
+            list-style-position: inside;
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Learning Style Assessment</h1>
+        </div>
+        <div id="mainContent" class="content"></div>
+    </div>
+
+    <script>
+        const learningContent = {
+            visual: {
+                content: `
+                    <div class="visual-content">
+                        <h3>The Water Cycle</h3>
+                        <img src="Watercycle.gif" alt="Water Cycle Diagram" style="width: 100%; max-width: 600px; margin: 1rem 0;">
+                        <div class="grid-container">
+                            <div class="grid-item">Evaporation</div>
+                            <div class="grid-item">Condensation</div>
+                            <div class="grid-item">Precipitation</div>
+                            <div class="grid-item">Collection</div>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: "Which stage comes after condensation in the water cycle?",
+                        options: ["Evaporation", "Collection", "Precipitation", "Filtration"],
+                        correct: "Precipitation"
+                    },
+                    {
+                        question: "In the diagram, what color was used to represent water vapor?",
+                        options: ["Blue", "White", "Gray", "Clear"],
+                        correct: "White"
+                    }
+                ]
+            },
+            auditory: {
+                content: `
+                    <div class="auditory-content">
+                        <h3>The Water Cycle</h3>
+                        <div class="learning-content">
+                            <p><em>Audio transcript:</em></p>
+                            <p>"Water travels in a continuous cycle on Earth. It starts with evaporation, where the sun heats water in oceans and lakes, turning it into vapor. This vapor rises and cools, forming clouds through condensation. When the clouds become heavy, precipitation occurs as rain or snow. Finally, the water collects in bodies of water, and the cycle begins again."</p>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: "What causes water to turn into vapor?",
+                        options: ["Wind", "The sun's UV rays", "Hot temperatures", "Moon's gravity"],
+                        correct: "Hot temperatures"
+                    },
+                    {
+                        question: "What happens when clouds become heavy?",
+                        options: ["Evaporation", "Collection", "Precipitation", "Condensation"],
+                        correct: "Precipitation"
+                    }
+                ]
+            },
+            kinesthetic: {
+                content: `
+                    <div class="kinesthetic-content">
+                        <h3>The Water Cycle</h3>
+                           <div class="kinesthetic-content">
+                        <h3>The Water Cycle</h3>
+                        <button onclick="speakText('Interactive exercise: cup hands, raise them, wiggle fingers, and make wave motions for each water cycle stage.')">Play Audio</button>
+                        <div class="learning-content">
+                            <p><strong>Interactive Exercise:</strong></p>
+                            <ol class="exercise-list">
+                                <li>Cup your hands together to form a "cloud"</li>
+                                <li>Raise your hands slowly to show water vapor rising</li>
+                                <li>Wiggle your fingers while lowering your hands to represent rain</li>
+                                <li>Make a wave motion with your hands to show collection in water bodies</li>
+                            </ol>
+                        </div>
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: "Which motion represented precipitation in our exercise?",
+                        options: ["Rising hands", "Waving hands", "Wiggling fingers downward", "Cupping hands"],
+                        correct: "Wiggling fingers downward"
+                    },
+                    {
+                        question: "What was the first step in our movement sequence?",
+                        options: ["Wave motion", "Raise hands", "Cup hands", "Wiggle fingers"],
+                        correct: "Cup hands"
+                    }
+                ]
+            }
+        };
+
+        class LearningStyleAssessment {
+            constructor() {
+                this.currentStyle = null;
+                this.currentQuestion = 0;
+                this.scores = {
+                    visual: 0,
+                    auditory: 0,
+                    kinesthetic: 0
+                };
+                this.completed = [];
+                this.showContent = true;
+                this.mainContent = document.getElementById('mainContent');
+            }
+
+            init() {
+                this.renderStyleSelection();
+            }
+
+            renderStyleSelection() {
+                const styles = ['visual', 'auditory', 'kinesthetic'].filter(
+                    style => !this.completed.includes(style)
+                );
+
+                if (styles.length === 0) {
+                    this.renderResults();
+                    return;
+                }
+
+                this.mainContent.innerHTML = `
+                    <p>Select a learning style to begin:</p>
+                    <div class="button-group">
+                        ${styles.map(style => `
+                            <button onclick="app.startStyle('${style}')">${style}</button>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            startStyle(style) {
+                this.currentStyle = style;
+                this.currentQuestion = 0;
+                this.showContent = true;
+                this.renderContent();
+            }
+
+            renderContent() {
+                if (!this.showContent) {
+                    this.renderQuestion();
+                    return;
+                }
+
+                this.mainContent.innerHTML = `
+                    ${learningContent[this.currentStyle].content}
+                    <button onclick="app.startQuestions()">Start Questions</button>
+                `;
+            }
+
+            startQuestions() {
+                this.showContent = false;
+                this.renderQuestion();
+            }
+
+            renderQuestion() {
+                const questions = learningContent[this.currentStyle].questions;
+                const currentQ = questions[this.currentQuestion];
+
+                this.mainContent.innerHTML = `
+                    <div class="question">
+                        <p><strong>Question ${this.currentQuestion + 1} of ${questions.length}</strong></p>
+                        <p>${currentQ.question}</p>
+                        <div class="button-group">
+                            ${currentQ.options.map(option => `
+                                <button onclick="app.handleAnswer('${option}')">${option}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            handleAnswer(answer) {
+                const questions = learningContent[this.currentStyle].questions;
+                const isCorrect = answer === questions[this.currentQuestion].correct;
+
+                if (isCorrect) {
+                    this.scores[this.currentStyle] += 50;
+                }
+
+                if (this.currentQuestion < questions.length - 1) {
+                    this.currentQuestion++;
+                    this.renderQuestion();
+                } else {
+                    this.completed.push(this.currentStyle);
+                    this.currentStyle = null;
+                    this.showContent = true;
+                    this.renderStyleSelection();
+                }
+            }
+
+            getBestLearningStyle() {
+                const maxScore = Math.max(...Object.values(this.scores));
+                return Object.entries(this.scores).find(([_, score]) => score === maxScore)[0];
+            }
+
+            renderResults() {
+                const bestStyle = this.getBestLearningStyle();
+                
+                this.mainContent.innerHTML = `
+                    <div class="result-text">
+                        Based on your responses, you seem to learn best through 
+                        <strong style="color: var(--primary-color)">${bestStyle} learning</strong>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="resultsChart"></canvas>
+                    </div>
+                `;
+
+                const ctx = document.getElementById('resultsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(this.scores).map(
+                            style => style.charAt(0).toUpperCase() + style.slice(1)
+                        ),
+                        datasets: [{
+                            label: 'Learning Style Scores',
+                            data: Object.values(this.scores),
+                            backgroundColor: 'rgba(102, 86, 135, 0.8)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        const app = new LearningStyleAssessment();
+        app.init();
+    </script>
+</body>
+</html>
